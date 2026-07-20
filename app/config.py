@@ -17,7 +17,7 @@ class Settings(BaseSettings):
     API_KEY: str = "default-dev-key"
     ALLOWED_ORIGINS: str = "http://localhost,http://localhost:8000,http://localhost:3000,http://127.0.0.1:8000"
     APP_TITLE: str = "IPED LXC Wrapper API"
-    APP_VERSION: str = "1.0.0"
+    APP_VERSION: str = "1.1.0-SNAPSHOT"
 
     @property
     def allowed_origins_list(self) -> list[str]:
