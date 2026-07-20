@@ -100,12 +100,21 @@ fi
 # 4. Set up deployment directories
 echo "[4/7] Setting up directories under /opt/iped-lxc-wrapper..."
 INSTALL_DIR="/opt/iped-lxc-wrapper"
-mkdir -p "$INSTALL_DIR"
-mkdir -p "$INSTALL_DIR/app"
 
-# Copy files (assuming running script from the source directory)
-cp -r app/* "$INSTALL_DIR/app/"
-cp requirements.txt "$INSTALL_DIR/"
+# Get absolute path of script directory
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+if [ "$SCRIPT_DIR" != "$INSTALL_DIR" ]; then
+    mkdir -p "$INSTALL_DIR"
+    mkdir -p "$INSTALL_DIR/app"
+    # Copy files (assuming running script from the source directory)
+    echo "Copying files from $SCRIPT_DIR to $INSTALL_DIR..."
+    cp -r "$SCRIPT_DIR/app/"* "$INSTALL_DIR/app/"
+    cp "$SCRIPT_DIR/requirements.txt" "$INSTALL_DIR/"
+else
+    echo "Running directly from installation directory $INSTALL_DIR, skipping file copy."
+fi
+
 
 # Create a sample .env configuration file if it doesn't exist
 ENV_FILE="$INSTALL_DIR/.env"

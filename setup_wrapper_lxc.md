@@ -22,13 +22,29 @@ Create a new LXC container in Proxmox to host the wrapper API with the following
 
 The project includes an automation script (`setup_wrapper_lxc.sh`) that installs dependencies, configures Redis security, sets up a virtual environment, installs Systemd services, and secures access.
 
-### Step 1: Copy Project Files to the Container
-Copy the project folder to the container or clone it inside the container under a temporary folder.
+### Step 1: Set up Git and Deploy Key (For future updates)
+To keep the container updated using Git and a Deploy Key:
+1. Log in to the LXC container as `root`.
+2. Generate an SSH Key:
+   ```bash
+   ssh-keygen -t ed25519 -C "iped-lxc-wrapper-deploy-key"
+   ```
+3. Copy the public key output:
+   ```bash
+   cat ~/.ssh/id_ed25519.pub
+   ```
+4. Add this public key as a read-only **Deploy Key** in your Git hosting platform (GitHub, GitLab, etc.) under repository settings.
+5. Clone the repository directly to the target directory `/opt/iped-lxc-wrapper`:
+   ```bash
+   git clone git@github.com:filipesimoes/iped-lxc.git /opt/iped-lxc-wrapper
+   ```
+   *(Replace with your repository SSH clone URL)*
 
 ### Step 2: Execute the Setup Script
-Run the script as `root` (optionally using the `--skip-redis` flag if using an external Redis instance):
+Run the setup script from the installation directory as `root` (optionally using the `--skip-redis` flag if using an external Redis instance):
 
 ```bash
+cd /opt/iped-lxc-wrapper
 chmod +x setup_wrapper_lxc.sh
 
 # To deploy with a local Redis server automatically configured:
@@ -196,7 +212,22 @@ sudo systemctl enable --now iped-wrapper-web.service iped-wrapper-worker.service
 
 ---
 
-## 4. Verification and Troubleshooting
+## 4. Updating the Service
+
+To update the wrapper codebase and restart services automatically in the future, run the update script as `root` from the installation directory:
+```bash
+sudo /opt/iped-lxc-wrapper/update_wrapper_lxc.sh
+```
+
+The script will automatically:
+1. Fetch the latest code from the active git branch using the configured SSH Deploy Key.
+2. Upgrade Python dependencies inside the virtual environment (`requirements.txt`).
+3. Correct folder ownership and configuration permissions.
+4. Restart the FastAPI web service (`iped-wrapper-web.service`) and Celery worker (`iped-wrapper-worker.service`).
+
+---
+
+## 5. Verification and Troubleshooting
 
 ### Check Service Status
 ```bash
