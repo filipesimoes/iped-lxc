@@ -18,9 +18,9 @@ logger = logging.getLogger(__name__)
 
 # Initialize FastAPI App
 app = FastAPI(
-    title="IPED LXC Wrapper API",
+    title=settings.APP_TITLE,
     description="Orchestrates IPED API instances in Proxmox LXC containers and handles transparent proxy routing with session token validation.",
-    version="1.0.0",
+    version=settings.APP_VERSION,
     dependencies=[Depends(verify_api_key)]
 )
 
