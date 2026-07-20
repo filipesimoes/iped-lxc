@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: iped-lxc-redis
+    command: redis-server --port 6380 --notify-keyspace-events Ex --requirepass $REDIS_PASSWORD
+    network_mode: "host"
+    restart: unless-stopped
+
+  web:
+    build: .
+    container_name: iped-lxc-web
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8001 --reload
+    network_mode: "host"
+    volumes:
+      - ./app:/workspace/app
+      - /storage:/storage
+    env_file:
+      - .env
+    depends_on:
+      - redis
+    restart: unless-stopped
+
+  worker:
+    build: .
+    container_name: iped-lxc-worker
+    command: celery -A app.celery_app worker --loglevel=info
+    network_mode: "host"
+    volumes:
+      - ./app:/workspace/app
+      - /storage:/storage
+    env_file:
+      - .env
+    depends_on:
+      - redis
+    restart: unless-stopped
+    extra_hosts:
+      - "labld-px.duckdns.org:${PVE_HOST_IP}"
+
+  mock-iped:
+    build: .
+    container_name: iped-lxc-mock-iped
+    command: uvicorn app.mock_iped:app --host 0.0.0.0 --port 8081
+    network_mode: "host"
+    volumes:
+      - ./app:/workspace/app
+    env_file:
+      - .env
+    depends_on:
+      - redis
+    restart: unless-stopped
