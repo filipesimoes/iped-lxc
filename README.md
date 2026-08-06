@@ -1,12 +1,12 @@
 # IPED LXC Wrapper
 
-A lightweight API wrapper built with **FastAPI**, **Celery**, and **Redis** for on-demand orchestration and transparent reverse proxy routing of **IPED** (*Indexador e Processador de Evidências Digitais* / Digital Evidence Indexer and Processor) instances running in Linux Containers (LXC) on **Proxmox VE (PVE)**.
+A lightweight API wrapper built with **FastAPI**, **Celery**, and **Redis** for on-demand orchestration and transparent reverse proxy routing of [**IPED**](https://github.com/sepinf-inc/IPED) (*Indexador e Processador de Evidências Digitais* / Digital Evidence Indexer and Processor) instances running in Linux Containers (LXC) on **Proxmox VE (PVE)**.
 
 ---
 
 ## 📌 Overview
 
-The **IPED LXC Wrapper** simplifies and automates the lifecycle management of IPED digital forensic processing environments virtualized in Proxmox VE. 
+The **IPED LXC Wrapper** simplifies and automates the lifecycle management of [IPED](https://github.com/sepinf-inc/IPED) digital forensic processing environments virtualized in Proxmox VE. 
 
 Via a unified REST API, external client systems can provision IPED LXC containers on demand, track container startup status, and interact seamlessly with the internal IPED Web API via a transparent reverse proxy—all while leveraging automatic session inactivity timeouts (TTL) to automatically shut down containers when no longer in use, saving server compute resources.
 
